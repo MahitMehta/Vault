@@ -9,7 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Styles from "../styles/styles.module.scss";
 
 const FileView = ({ fileName, showFileView, hideFileView, handleFalseLogin }) => {
-    const getFileURL = () => {
+    const getFileURL = (download) => {
         const token = sessionStorage.getItem('access-token');
         if (!token) {
             handleFalseLogin();
@@ -20,7 +20,7 @@ const FileView = ({ fileName, showFileView, hideFileView, handleFalseLogin }) =>
         const user = JSON.parse(atob(sessionStorage.getItem('user'))); 
         const baseDirectory = user.folderName; 
 
-        return `/api/aws/getFile?baseDirectory=${baseDirectory}&directory=${currentDirectory}&fname=${fileName}&token=${token}`;
+        return `http://localhost:5000/api/aws/getFile/${fileName}?baseDirectory=${baseDirectory}&directory=${currentDirectory}&fname=${fileName}&token=${token}&download=${download}`;
     }
 
     return (
@@ -29,10 +29,11 @@ const FileView = ({ fileName, showFileView, hideFileView, handleFalseLogin }) =>
                 <Modal.Title>{ fileName ? fileName : "File" }</Modal.Title>
             </Modal.Header>
             <Modal.Body className={Styles.fileObjectContainer}>
-                <a href={getFileURL()} target="_blank" rel="noreferrer">
-                    <Button>Open Raw</Button>
-                </a>
-                <object className={Styles.fileObject} data={getFileURL()}>
+                <div className={Styles.fileObjectButtons}>
+                    <Button className={Styles.fileObjectButton} href={getFileURL(false)} target="_blank" rel="noreferrer">Open Raw</Button>
+                    <Button className={Styles.fileObjectButton} href={getFileURL(true)} target="_blank" rel="noreferrer">Download File</Button>
+                </div>
+                <object className={Styles.fileObject} data={getFileURL(false)}>
                     Not Supported
                 </object>
             </Modal.Body>

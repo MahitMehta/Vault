@@ -15,10 +15,12 @@ const s3 = new AWS.S3({
 const bucketIO = new BucketIO(dbObject=s3);
 Router.use(express.static(path.join(__dirname, '../temp')));
 
-Router.get('/getFile', (req, res) => {
+Router.get('/getFile/:fileName', (req, res) => {
     let requestDirectory = req.query.directory;
     const baseDirectory = req.query.baseDirectory;
+    const download = req.query.download;
     const fname = req.query.fname; 
+    console.log("getting!");
 
     if (!requestDirectory || !fname) res.status(400).send("Forbidden");
     const buff = new Buffer.from(req.query.fname, "ascii"); 
@@ -38,7 +40,12 @@ Router.get('/getFile', (req, res) => {
                 return; 
             };
             fs.writeFile(filePathTemp, body, () => {
-                res.sendFile(path.join(__dirname, `../temp/${fnameEncoded}.${extension}`));
+                if (download == "true") {
+                    res.download(path.join(__dirname, `../temp/${fnameEncoded}.${extension}`), fname);
+                } else {
+                    res.sendFile(path.join(__dirname, `../temp/${fnameEncoded}.${extension}`));
+                }
+                
                 res.on('finish', () => {
                     resolve();
                 });
