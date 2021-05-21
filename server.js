@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const PORT = process.env.PORT || 5000;
 const MongoModels = require('mongo-models');
+const fs = require('fs');
 
 const MongoDBQueries = require('./MongoDBQueries');
 const mongoDBQueries = new MongoDBQueries();
@@ -13,6 +14,7 @@ const authRoutes = require('./routes/authRoutes');
 const awsRoutes = require('./routes/awsRoutes');
 
 const busboy = require('connect-busboy');
+const { fstat } = require('fs');
 
 require('dotenv').config();
 
@@ -63,6 +65,10 @@ app.get("*", (_, res) => {
 });
 
 async function main() {
+    const tempDir = path.join(__dirname, 'temp/');
+    if (!fs.existsSync(tempDir))
+        fs.mkdirSync(tempDir);
+
     await MongoModels.connect(connection, { useUnifiedTopology: true });
     app.listen(PORT);
     console.log(`Listening on Port:${PORT}`);
