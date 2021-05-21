@@ -6,6 +6,21 @@ var cookie = require('cookie');
 
 const mongoDBQueries = new MongoDBQueries();
 
+Router.post("/logoutAdmin", (req, res) => {
+    const { email } = req.body; 
+    const token = req.query.token; 
+
+    if (!email || !token) {
+        res.status(400).send({ success: false });
+        return; 
+    }
+
+    mongoDBQueries.logoutUser(email, token, success => {
+        res.status(success ? 200 : 403).json({ success: success });
+    });
+
+});
+
 Router.post('/loginAdmin', (req, res) => {
     const authorizationToken = req.headers.authorization;
     let buff = new Buffer.from(authorizationToken.split(/\s+/)[1], 'base64');
@@ -28,6 +43,7 @@ Router.post('/loginAdmin', (req, res) => {
 
             let payLoadUser = new Buffer.from(JSON.stringify({
                 bucket: response.bucket,
+                email: response.email,
                 folderName: response.folderName,
                 userId: response.userId,
             }));

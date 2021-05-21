@@ -54,6 +54,7 @@ const connection = {
 
 app.use(validateRequest);
 app.use('/api/aws', validateToken);
+app.use('/api/auth/logoutAdmin', validateToken);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/aws', awsRoutes);

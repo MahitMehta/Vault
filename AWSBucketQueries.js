@@ -22,7 +22,7 @@ class BucketIO {
                     reject({ operationSuccess: false, code: err.code });
                 }
                 else {
-                    console.log('Bucket Created Successfully');
+                    // console.log('Bucket Created Successfully');
                     resolve({ operationSuccess: true, location: data.Location })
                 }
             });
@@ -55,8 +55,7 @@ class BucketIO {
         let dirAdjusted = `${dirFormatted}/${filePathNew}`;
         dirAdjusted = dirAdjusted.replace(/\/\//g , '/');
         const fileContent = fs.readFileSync(fileName);
-        console.log("File Key: ", dirAdjusted);
-        // console.log(dirAdjusted);
+        // console.log("File Key: ", dirAdjusted);
         const params = {
             Bucket: process.env.AWS_DEFAULT_BUCKET,
             Key: dirAdjusted,
@@ -77,7 +76,7 @@ class BucketIO {
         const dirPath = `${baseDirectory}/${directory == "/" ? "" : directory}${name}/`;
         const dirPathAdjusted = dirPath.split('-').join('/');
         const pathSegmented = dirPathAdjusted.split('/');
-        console.log(dirPathAdjusted);
+        // onsole.log(dirPathAdjusted);
         pathSegmented.pop();
         pathSegmented.pop(); 
         this.mongoDBQueries.setDirectory(userId, pathSegmented.join("/") + "/",dirPathAdjusted);
@@ -92,7 +91,7 @@ class BucketIO {
     listObject(directory, callback) {
         let s3DataContents = [];
         const directoryAdjusted = directory.replace("//", "/");
-        console.log(directoryAdjusted);
+        // console.log(directoryAdjusted);
 
         const params = {
             Bucket: process.env.AWS_DEFAULT_BUCKET,

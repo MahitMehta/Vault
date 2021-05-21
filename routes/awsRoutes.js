@@ -18,16 +18,20 @@ Router.use(express.static(path.join(__dirname, '../temp')));
 Router.get('/getFile', (req, res) => {
     let requestDirectory = req.query.directory;
     const baseDirectory = req.query.baseDirectory;
-    const fname = req.query.fname;
+    const fname = req.query.fname; 
 
-    if (!requestDirectory) res.status(400).json({ querySuccess: false, data: [] })
+    if (!requestDirectory || !fname) res.status(400).send("Forbidden");
+    const buff = new Buffer.from(req.query.fname, "ascii"); 
+    const fnameEncoded = buff.toString("base64"); 
     requestDirectory = requestDirectory.split('-')
     requestDirectory = requestDirectory.join('/');
     requestDirectory = requestDirectory.replace('BASE', '');
     requestDirectory = requestDirectory.substring(2);
     const directory = `${baseDirectory}/${requestDirectory}`;
     const filePath = directory + fname; 
-    const filePathTemp = `./temp/${fname}`;
+    const fileNameSplit = fname.split('.');
+    const extension = fileNameSplit.length ? fileNameSplit[fileNameSplit.length - 1] : "";
+    const filePathTemp = `./temp/${fnameEncoded}.${extension}`;
     const fileSent = new Promise((resolve, reject) => {
         bucketIO.retrieveFile(filePath, ({error, body}) => {
             if (error) {
@@ -35,7 +39,7 @@ Router.get('/getFile', (req, res) => {
                 return; 
             };
             fs.writeFile(filePathTemp, body, () => {
-                res.sendFile(path.join(__dirname, `../temp/${fname}`));
+                res.sendFile(path.join(__dirname, `../temp/${fnameEncoded}.${extension}`));
                 res.on('finish', () => {
                     resolve();
                 });
@@ -140,7 +144,7 @@ Router.post('/uploadFiles', (req, res) => {
         const fileNameAltered = fname ? fname : filename; 
         const path = './temp/' + fileNameAltered; 
         fstream = fs.createWriteStream(path);
-        console.log("writing file");
+        // console.log("writing file");
         file.pipe(fstream);
         fstream.on('close', () => {
             // console.log("uploading to aws..");

@@ -1,0 +1,85 @@
+.uploadFileContainer {
+  max-height: 200px !important;
+  overflow-y: scroll;
+}
+
+.uploadFileContainer::-webkit-scrollbar {
+  width: 5px;
+  background-color: transparent;
+}
+
+.uploadFileContainer::-webkit-scrollbar-thumb {
+  width: 5px;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.uploadFileControl {
+  margin-left: 25px;
+  margin-bottom: 25px;
+
+  .uploadButtonContainer {
+    display: flex;
+
+    .uploadButtonCover {
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .uploadButtonReal {
+      color: transparent;
+      height: 38px;
+      width: 110px;
+      opacity: 0;
+    }
+  }
+}
+
+.uploadItem {
+  margin: 15px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .uploadItemName {
+    width: 125px;
+    margin: 0px 15px;
+  }
+}
+
+.uploadFilesButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .uploadFilesSpinner {
+    margin-right: 10px;
+  }
+}
+
+.uploadSection {
+  transition: 250ms;
+  width: 95%;
+  height: 175px;
+  border-radius: 15px;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  position: relative;
+  border: 2px dashed rgba(0, 0, 0, 0.15);
+}
+
+.uploadSectionImage {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(0, 0, 0, 0.25);
+
+  .uploadImage {
+    font-size: 2rem;
+  }
+}

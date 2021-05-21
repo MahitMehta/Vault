@@ -1,0 +1,11 @@
+.fileObjectContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .fileObject {
+    width: 100%;
+    min-height: 350px;
+    height: 65vh;
+  }
+}

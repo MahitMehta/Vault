@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-
-// Components
-import UploadFile from "./UploadFile";
+import React, { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import APIQueries from "../classes/APIQueries";
 
 // Bootstrap Components
 import Breadcrumb from "react-bootstrap/Breadcrumb";
@@ -11,15 +11,57 @@ import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Styles from "../styles/styles.module.scss";
 
-const VaultNav = ({ handleUploadFile }) => {
+const VaultNav = ({ handleUploadFile, showFolders }) => {
+    const [ showMenu, setShowMenu ] = useState(false);
+
+    const handleLogout = () => {
+        const token = sessionStorage.getItem("access-token"); 
+        const user = JSON.parse(atob(sessionStorage.getItem('user')));
+        const baseDirectory = user.folderName; 
+        const email = user.email; 
+        const apiQueries = new APIQueries(token);
+
+        apiQueries.logoutAdmin(baseDirectory, email)
+            .then(() => {
+                sessionStorage.removeItem("user");
+                sessionStorage.removeItem("access-token");
+            }).catch(_ => {
+                console.log("Failed Logout! Token Still Valid");
+                sessionStorage.removeItem("user");
+                sessionStorage.removeItem("access-token");
+            }).finally(() => {
+                window.location.href = `${window.location.origin}/`;
+            })
+    }
+
+    const setMenu = () => {
+        if (window.innerWidth <= 800) {
+            setShowMenu(true);
+        } else {
+            setShowMenu(false);
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener("resize", setMenu);
+        setMenu();
+    })
+
     const queryDirectory = ['/'].concat(window.location.href.split('dir=')[1].split('/')).filter(dir => dir !== "");
 
     return (
         <nav className={Styles.vault_nav}>
+            { showMenu ? (
+                <div className={Styles.vault_nav_icon} onClick={() => {
+                    showFolders()
+                }}>
+                    <FontAwesomeIcon icon={faBars} />
+                </div>
+            ) : null }
             <div className={Styles.breadcrumb_container}>
                 {
                     queryDirectory.length ? (
-                        <Breadcrumb>
+                        <Breadcrumb className={Styles.breadcrumb}>
                             { queryDirectory.map((segment, idx) => {
                                 return (
                                     <Breadcrumb.Item 
@@ -38,6 +80,11 @@ const VaultNav = ({ handleUploadFile }) => {
                 <Button className={Styles.upload_button} onClick={() => {
                     handleUploadFile();
                 }}>Upload File</Button>
+            </div>
+            <div style={{ margin: "0px 5px" }} onClick={handleLogout}>
+                <Button>
+                    <FontAwesomeIcon icon={faSignOutAlt} />
+                </Button>
             </div>
         </nav>
     )

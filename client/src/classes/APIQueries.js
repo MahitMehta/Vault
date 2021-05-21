@@ -3,6 +3,24 @@ class APIQueries {
         this.token = token; 
     }
 
+    async logoutAdmin(baseDirectory, userEmail) {
+        const endpoint = `/api/auth/logoutAdmin?baseDirectory=${baseDirectory}&token=${this.token}`;
+
+        const payLoad = JSON.stringify({
+            email: userEmail,
+        });
+
+        const userAuth = await fetch(endpoint, {
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json",
+            },
+            "body": payLoad
+        });
+
+        return userAuth; 
+    }
+
     async loginAdmin(userEmail, pass) {
         const endpoint = "/api/auth/loginAdmin";
 

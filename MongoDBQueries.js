@@ -17,7 +17,25 @@ class MongoDBQueries {
 
     updateLatestIssue(email, currentIssue) {
         const response = UserModel.updateLatestIssue(email, currentIssue);
-        return response; 
+        return response;
+    }
+
+    logoutUser(email, token, cb) {
+        const data = jwt.verify(token, process.env.ADMIN_ACCESS_TOKEN);
+        if (data.currentAdmin != email) {
+            cb(false);
+            return; 
+        }
+
+        let currentIssue = data.expire;
+        currentIssue++;
+
+        const response = UserModel.updateLatestIssue(email, currentIssue);
+        response.then(_ => {
+            cb(true);
+        }).catch(_ => {
+            cb(false);
+        })
     }
 
     validateToken(token, baseDirectory, cb) {
@@ -26,7 +44,8 @@ class MongoDBQueries {
             const response = UserModel.getUser(currentAdmin);
             response.then(res => {
                 const latestIssue = res.latestIssue; 
-                if (expire >= latestIssue && currentAdminFolder == baseDirectory) cb(true);
+                const now = Date.now();
+                if (expire >= latestIssue && currentAdminFolder == baseDirectory && expire > now) cb(true);
                 else cb(false);
             }).catch(err => {
                 console.log(err);

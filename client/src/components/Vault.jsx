@@ -37,6 +37,7 @@ const Vault = () => {
     const [ folders, setFolders ] = useState([]);
     const [ showFileView, setShowFileView ] = useState(false);
     const [ currentFileInfo, setCurrentFileInfo ] = useState({});
+    const [ showFolders, setShowFolders] = useState(false);
 
     const handleLoadFiles = useCallback(() => {
         const token = sessionStorage.getItem('access-token');
@@ -140,10 +141,29 @@ const Vault = () => {
         }
     }, [loadedFolders, files, noFiles, handleLoadFiles, validLogin, loginInvalid, handleLoadFolders]);
 
+    const desktop = () => {
+        if (window.innerWidth > 800) {
+            return true; 
+        }
+        return false; 
+    }
+
+    const setMenu = () => {
+        if (window.innerWidth > 800 && !showFolders) {
+            setShowFolders(true);
+            return true; 
+        }
+        return false; 
+    }
+
+    useEffect(() => {
+        window.addEventListener("resize", setMenu);
+        setMenu();
+    })
+
     const alertHandler = () => {
         setIsAlert(true);
     }
-
     return (
         !loginInvalid ? (
             <React.Fragment>
@@ -190,9 +210,10 @@ const Vault = () => {
                         setLoginInvalid(true);
                     }}
                 />
+        
                 { validLogin ? (
                         <main className={Styles.vault_display}>
-                        <section className={Styles.buckets}>
+                        <section className={Styles.buckets} style={showFolders ? { transform: `translate(0%, ${showFolders && desktop() ? "0px" : "80px"})`, padding: "15px"} : { transform: `translate(-100%, ${setMenu() ? "0px" : "80px"})`, padding: "0px"} }>
                         <Button onClick={() => setCreateBucket(true)}>Create Folder</Button>
                         <ul className={Styles.bucket_list}>
                             { loadedFoldersUL.map((folder, idx ) => {
@@ -213,7 +234,9 @@ const Vault = () => {
                     <section className={Styles.bucket_files}>
                         <VaultNav handleUploadFile={() => {
                             setUploadFile(true);
-                        }}/>
+                        }} showFolders={() => {
+                            setShowFolders(!showFolders);
+                        }} />
                         <div className={Styles.objectContainer}>
                             { files.map((file, idx) => {
                                 return <AWSObject key={idx} file={file} handleClick={(fname) => {
