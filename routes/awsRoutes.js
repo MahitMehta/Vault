@@ -134,21 +134,23 @@ Router.post('/uploadFiles', (req, res) => {
     const baseDirectory = req.query.baseDirectory; 
     const directory = req.query.directory;
     const adjustedDir = directory == "BASE" ? "" : directory;
-
     let fstream;
     req.pipe(req.busboy);
     req.busboy.on('file', async (_, file, filename) => {
         const fileNameAltered = fname ? fname : filename; 
         const path = './temp/' + fileNameAltered; 
         fstream = fs.createWriteStream(path);
+        console.log("writing file");
         file.pipe(fstream);
         fstream.on('close', () => {
             // console.log("uploading to aws..");
             bucketIO.uploadFile(`${baseDirectory}/${adjustedDir}${fileNameAltered}`, `./temp/${fileNameAltered}`, (success) => {
-                fs.unlink(path, () => {
-                    return; 
-                });
                 res.status(200).send({ operationSuccess: success });
+                res.on('finish', () => {
+                    fs.unlink(path, () => {
+                        return; 
+                    });
+                });
             });
             
         });
