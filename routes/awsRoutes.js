@@ -26,7 +26,6 @@ Router.get('/getFile', (req, res) => {
     requestDirectory = requestDirectory.split('-')
     requestDirectory = requestDirectory.join('/');
     requestDirectory = requestDirectory.replace('BASE', '');
-    requestDirectory = requestDirectory.substring(2);
     const directory = `${baseDirectory}/${requestDirectory}`;
     const filePath = directory + fname; 
     const fileNameSplit = fname.split('.');
@@ -48,7 +47,7 @@ Router.get('/getFile', (req, res) => {
     });
 
     fileSent.then(() => {
-        fs.unlink(path.join(__dirname, "../temp", fname), () => {
+        fs.unlink(path.join(__dirname, "../temp", `${fnameEncoded}.${extension}`), () => {
             // File Deleted!
         });
     }).catch(() => {
