@@ -2,7 +2,9 @@ const express = require('express');
 const Router = express.Router();
 const jwt = require('jsonwebtoken');
 const MongoDBQueries = require('../MongoDBQueries');
-var cookie = require('cookie');
+const crypto = require('crypto');
+const { SHA256 } = require('crypto-js');
+require('dotenv').config();
 
 const mongoDBQueries = new MongoDBQueries();
 
@@ -56,6 +58,27 @@ Router.post('/loginAdmin', (req, res) => {
     }).catch(err => {
         console.log(err);
         res.status(500).json({ access: false });
+    })
+});
+
+Router.post('/signup', (req, res) => {
+    const authorizationToken = req.headers.authorization;
+    let buff = new Buffer.from(authorizationToken.split(/\s+/)[1], 'base64');
+    let decodedToken = buff.toString('ascii');
+    const [email, pass] = decodedToken.split(":");
+
+    const randomFolderNameString = Math.random().toString() + Date.now().toString();
+    const folderName = crypto.createHash('SHA1').update(randomFolderNameString).digest('hex');
+
+    const bucket = process.env.AWS_DEFAULT_BUCKET; 
+
+    const randomUserIdString = Math.random().toString() + Date.now().toString();
+    const userId = SHA256(randomUserIdString).toString();
+
+    const currentIssue = Date.now();
+
+    mongoDBQueries.createUser(email, pass, folderName, bucket, userId, currentIssue, ({ success, code }) => {
+        res.status(success ? 200 : 500).json({ success: success, code: code });
     })
 });
 

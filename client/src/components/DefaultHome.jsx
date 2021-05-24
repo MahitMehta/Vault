@@ -86,7 +86,7 @@ const initCanvas = (canvas) => {
     canvasEngine();
 }
 
-const DefaultHome = () => {
+const DefaultHome = ({ children }) => {
     const canvas = useRef();
 
     useEffect(() => {
@@ -97,8 +97,7 @@ const DefaultHome = () => {
         <React.Fragment>
             <canvas className={Styles.canvas} ref={canvas}></canvas>
             <main className={Styles.main}>
-                <LoginForm />
-         
+                { children }
             </main>
         </React.Fragment>
     )

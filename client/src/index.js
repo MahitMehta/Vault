@@ -6,13 +6,23 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-d
 // Views
 import DefaultHome from "./components/DefaultHome";
 import Vault from "./components/Vault";
+import SignUp from "./components/SignUp";
+import LoginForm from "./components/LoginForm";
 
 ReactDOM.render(
   <React.StrictMode>
       <Router>
         <Switch>
-          <Route exact path="/" component={DefaultHome}/>
-          <Route exact path="/vault" component={Vault}/>
+          <Route exact path="/" render={() => (
+            <DefaultHome>
+              <LoginForm />
+            </DefaultHome>
+          )}/>
+          <Route exact path="/createAccount" render={() => (
+            <DefaultHome>
+              <SignUp />
+            </DefaultHome>
+          )}/>
           <Route exact path="/vault" component={Vault}/>
           <Redirect to="/" />
         </Switch>

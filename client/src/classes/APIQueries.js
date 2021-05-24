@@ -36,6 +36,21 @@ class APIQueries {
         return userAuth; 
     }
 
+    async signUp(userEmail, pass) {
+        const endpoint = "/api/auth/signup";
+
+        const encodedCredentials = btoa(`${userEmail}:${pass}`);
+        const token = `Basic ${encodedCredentials}`;
+        const userAuth = await fetch(endpoint, {
+            "credentials": "include",
+            "method": "POST",
+            "headers": {
+                "Authorization": token
+            }
+        });
+        return userAuth; 
+    }
+
     async loadFolders(baseDirectory, directory, userId) {
         const encryptedUserId = btoa(userId);
         const endpoint = `/api/aws/getAllFolders?baseDirectory=${baseDirectory}&directory=${directory}&userId=${encryptedUserId}&token=${this.token}`;  

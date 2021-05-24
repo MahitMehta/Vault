@@ -5,13 +5,27 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 class MongoDBQueries {
-
-    createUser(email, pass, folderName, bucket, userId, latestIssue, loggedIn) {
+    createUser(email, pass, folderName, bucket, userId, latestIssue, cb) {
         try {
-            const response = UserModel.createUser(email, pass, folderName, bucket, userId, latestIssue, loggedIn);
-            return response; 
+            const userExists = UserModel.findUser(email);
+            userExists.then(exists => {
+                if (exists) {
+                    cb({ success: false, code: "USER-EXISTS" });
+                    return; 
+                }   
+                const res = UserModel.createUser(email, pass, folderName, bucket, userId, latestIssue);
+                res.then(response => {
+                    if (response.length) cb({ success: true });
+                    else cb({ success: false });
+                }).catch(err => {
+                    console.log(err);
+                    cb({ success: false });
+                });
+            }).catch(() => {
+                cb({ success: false });
+            });
         } catch (err) {
-            console.log(err);
+            cb({ success: false });
         }
     }
 
@@ -87,36 +101,6 @@ class MongoDBQueries {
             return [];
         }
     }
-
-    createUser(email, pass) {
-        const validate = async () => {
-            // const UserModelOBJ = new UserModel({
-            //     email: 'edjled',
-            //     pass: 'dejdh',
-            //     folderName:'dedled',
-            //     bucket: 'ded',
-            //     userId:'ed',
-            //     latestIssue: 1,
-            // });
-            // const query = { email: "mahit.py@gmail.com" };
-            // UserModelOBJ
-        }
-        validate();
-    }
 }
 
 module.exports = MongoDBQueries;
-
-// const validUser = (email, pass) => {
-//     client.connect()
-//     .then(() => {
-//         const collection = client.db("vault_users").collection("users");
-//         console.log("Success");
-//         client.close();
-//     })
-//     .catch((err) => {
-//         console.log("error");
-//         client.close();
-//     });
-//     return true;
-// }

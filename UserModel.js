@@ -12,11 +12,10 @@ const schema = Joi.object({
     bucket: Joi.string().required(),
     userId: Joi.string().required(),
     latestIssue: Joi.number().required(),
-    loggedIn: Joi.boolean().required(),
 });
 
 class UserModel extends MongoModels {   
-    static createUser(email, pass, folderName, bucket, userId, latestIssue, loggedIn) {
+    static createUser(email, pass, folderName, bucket, userId, latestIssue) {
         const document = new UserModel({
             email: email,
             pass: pass,
@@ -24,9 +23,13 @@ class UserModel extends MongoModels {
             bucket: bucket,
             userId: userId,
             latestIssue: latestIssue,
-            loggedIn: loggedIn,
         });
         return this.insertOne(document);
+    }
+
+    static findUser(email) {
+        const filter = { email: email };
+        return this.findOne(filter);
     }
 
     static updateLatestIssue(email, currentIssue) {

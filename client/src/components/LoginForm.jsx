@@ -71,6 +71,7 @@ const Login = () => {
                 ) : "" } 
                 <Button className={Styles.access_vault} onClick={loginHandler}>Access Vault</Button>
             </Form>
+            <a href="/createAccount" className={Styles.createAccount}>Create Account</a>
         </section>
     ) : <Redirect to="/vault" />
 }
