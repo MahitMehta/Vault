@@ -86,11 +86,21 @@ const initCanvas = (canvas) => {
     canvasEngine();
 }
 
+function initFirewall(canvas) {
+    canvas.width = window.innerWidth; 
+    canvas.height = window.innerHeight; 
+
+    const ctx = canvas.getContext('2d');
+    ctx.font = "15px Arial";
+    // ctx.fillText('const firewall = new Firewall(mode="Ultra-Secure");'.substring(0, 3), 100, 100);
+    // ctx.fill();
+}
+
 const DefaultHome = ({ children }) => {
     const canvas = useRef();
 
     useEffect(() => {
-       // initCanvas(canvas.current);
+       initFirewall(canvas.current);
     })
 
     return (

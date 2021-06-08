@@ -11,7 +11,20 @@
     }
   }
 
+  .fileObjectSpinner {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-15px);
+    min-height: 100%;
+  }
+
   .fileObject {
     min-height: 350px;
+    object-fit: contain;
+    aspect-ratio: 1;
   }
 }
