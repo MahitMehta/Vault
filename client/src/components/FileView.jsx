@@ -23,7 +23,7 @@ const FileView = ({ fileName, showFileView, hideFileView, handleFalseLogin }) =>
         const user = JSON.parse(atob(sessionStorage.getItem('user'))); 
         const baseDirectory = user.folderName; 
 
-        return `http://localhost:5000/api/aws/getFile/${fileName}?baseDirectory=${baseDirectory}&directory=${currentDirectory}&fname=${fileName}&token=${token}&download=${download}`;
+        return `/api/aws/getFile/${fileName}?baseDirectory=${baseDirectory}&directory=${currentDirectory}&fname=${fileName}&token=${token}&download=${download}`;
     }
 
     const handleFileViewClose = () => {
