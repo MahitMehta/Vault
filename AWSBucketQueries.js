@@ -9,12 +9,12 @@ class BucketIO {
     }
 
     async loadPublicFile(userId, fileId, cb) {
-        const absoluteDirectory = await this.mongoDBQueries.getPublicObjectDirectory(userId, fileId);
-        if (!absoluteDirectory) {
+        const absoluteDirectory = await this.mongoDBQueries.getPublicObjectDirectory(userId, fileId).catch(() => {
             cb({ error: true, body: ""});
             return; 
-        };
-        this.retrieveFile(absoluteDirectory, cb);
+        });
+
+        if (absoluteDirectory) this.retrieveFile(absoluteDirectory, cb);
     }
 
     createBucket(location="us-east-2") {

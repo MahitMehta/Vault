@@ -52,7 +52,7 @@ const FileView = ({ fileName, showFileView, hideFileView, handleFalseLogin, setA
         if (!userId) {
             return; 
         }
-
+        
         apiQueries.setObjectPublic(userId, fileName, baseDirectory, currentDirectory).then(res => res.json())
             .then((data) => {
                 if (data.success && data.url) {

@@ -25,15 +25,9 @@ router.post("/setObjectPublic", async (req, res) => {
     }
 
     const absoluteDirectory = `${baseDirectory}/${directory}`;
+    const collectionName = `${userId}-public-files`;
 
-    const connection = {
-        uri: `mongodb+srv://${process.env.MONGODB_ADMIN_USERNAME}:${process.env.MONGODB_ADMIN_PASS}@vault.u5blu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
-        db: 'public'
-    };
-
-    await MongoModels.connect(connection, { useUnifiedTopology: true });
-
-    const response = await new MongoDBQueries().setObjectPublic(userId, fname, absoluteDirectory);
+    const response = await new MongoDBQueries().setObjectPublic(collectionName, fname, absoluteDirectory);
 
     const url = `/public/getPublicObject/${userId}?id=${response.id}&fname=${fname}`;
 
@@ -42,8 +36,6 @@ router.post("/setObjectPublic", async (req, res) => {
     } else {
         res.status(500).json({ success: false });
     }
-
-    MongoModels.disconnect();
 });
 
 router.get("/getPublicObject", async (req, res) => {
@@ -55,13 +47,6 @@ router.get("/getPublicObject", async (req, res) => {
 
     download = download === "true";
 
-    const connection = {
-        uri: `mongodb+srv://${process.env.MONGODB_ADMIN_USERNAME}:${process.env.MONGODB_ADMIN_PASS}@vault.u5blu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
-        db: 'public'
-    };
-
-    await MongoModels.connect(connection, { useUnifiedTopology: true });
-
     const fnameBuff = new Buffer.from(fname, 'ascii');
     const fnameEncoded = fnameBuff.toString('base64');
     const fileNameSplit = fname.split('.');
@@ -69,7 +54,8 @@ router.get("/getPublicObject", async (req, res) => {
     const filePathTemp = `./temp/${fnameEncoded}.${extension}`;
 
     const bucketIO = new BucketIO(s3);
-    bucketIO.loadPublicFile(userId, fileId, ({ error, body }) => {
+    const collectionName = `${userId}-public-files`;
+    bucketIO.loadPublicFile(collectionName, fileId, ({ error, body }) => {
         if (error) res.send("Invalid File");
 
         fs.writeFile(filePathTemp, body, () => {
@@ -83,7 +69,6 @@ router.get("/getPublicObject", async (req, res) => {
                 fs.unlink(path.join(__dirname, `../temp/${fnameEncoded}.${extension}`), () => {
                   // Pass
                 });
-                MongoModels.disconnect();
             });
         });
     });

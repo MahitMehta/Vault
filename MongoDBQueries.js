@@ -118,8 +118,15 @@ class MongoDBQueries {
     async getPublicObjectDirectory(collectionName, fileId) {
         const response = new Promise( async (resolve, reject) => {
             const validIdResponse = await PublicModel(collectionName).validateFileId(fileId);
+            if (!validIdResponse) {
+                reject(null)
+                return; 
+            }; 
             let { publicId, fname, directory } = validIdResponse;  
-            if (publicId !== fileId || !directory || !fname) reject(null); 
+            if (publicId !== fileId || !directory || !fname) {
+                reject(null)
+                return;
+            }; 
             
             if (directory.slice(-4) === "BASE") directory = directory.slice(0, -4);
             const fullDirectory = `${directory}${fname}`;
