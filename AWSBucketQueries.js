@@ -8,6 +8,15 @@ class BucketIO {
         this.mongoDBQueries = new MongoDBQueries();
     }
 
+    async loadPublicFile(userId, fileId, cb) {
+        const absoluteDirectory = await this.mongoDBQueries.getPublicObjectDirectory(userId, fileId);
+        if (!absoluteDirectory) {
+            cb({ error: true, body: ""});
+            return; 
+        };
+        this.retrieveFile(absoluteDirectory, cb);
+    }
+
     createBucket(location="us-east-2") {
         const createBucketPromise = new Promise((resolve, reject) => {
             const params = {

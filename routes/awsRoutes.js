@@ -4,6 +4,7 @@ const fs = require('fs');
 const MongoDBQueries = require('../MongoDBQueries');
 const mongoDBQueries = new MongoDBQueries();
 const path = require('path');
+const MongoModels = require("mongo-models");
 
 const BucketIO = require('../AWSBucketQueries');
 const AWS = require('aws-sdk');
@@ -11,6 +12,7 @@ const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
+
 
 const bucketIO = new BucketIO(dbObject=s3);
 Router.use(express.static(path.join(__dirname, '../temp')));
@@ -121,20 +123,34 @@ Router.get('/getAllFolders', (req, res) => {
 Router.get('/getAllFiles', (req, res) => {
     let requestDirectory = req.query.directory;
     const baseDirectory = req.query.baseDirectory;
-    if (!requestDirectory) res.status(400).json({ querySuccess: false, data: [] })
+    const userId = req.query.userId;
+
+    if (!requestDirectory || !baseDirectory || !userId) res.status(400).json({ querySuccess: false, data: [] })
     requestDirectory = requestDirectory.split('-')
     requestDirectory = requestDirectory.join('/');
     requestDirectory = requestDirectory.replace('BASE', '');
     requestDirectory = requestDirectory.substring(2);
     const directory = `${baseDirectory}/${requestDirectory}`;
 // console.log(directory);
-    bucketIO.listObject(directory, (data) => {
+    bucketIO.listObject(directory, async (data) => {
         let dataResponse = data.data.length ? data.data.map(file => {
             return file.Key;
         }) : [];
+
         dataResponse = dataResponse.filter(data => {
             return data.match(/\.[A-z]+$/);
         });
+
+        // const connection = {
+        //     uri: `mongodb+srv://${process.env.MONGODB_ADMIN_USERNAME}:${process.env.MONGODB_ADMIN_PASS}@vault.u5blu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+        //     db: 'public'
+        // };
+        
+        // await MongoModels.connect(connection, { useUnifiedTopology: true });
+
+        // const publicFiles = await mongoDBQueries.getAllPublicFiles(userId, directory);
+        // console.log(publicFiles);
+
         res.json({ querySuccess: true, data: dataResponse});
     });
 });

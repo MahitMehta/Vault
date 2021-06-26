@@ -12,9 +12,9 @@ const cookieParser = require('cookie-parser');
 
 const authRoutes = require('./routes/authRoutes');
 const awsRoutes = require('./routes/awsRoutes');
+const publicRoutes = require("./routes/publicRoutes");
 
 const busboy = require('connect-busboy');
-const { fstat } = require('fs');
 
 require('dotenv').config();
 
@@ -30,6 +30,12 @@ const validateRequest = (req, res, next) => {
     if (!hostValid) {
         res.status(403).send("Forbidden")
     }
+
+    const userAgent = req.headers['user-agent'];
+    if (!userAgent || userAgent.startsWith("curl/")) {
+        res.status(403).send("Forbidden");
+    }
+
     next();
 }
 
@@ -59,6 +65,9 @@ app.use('/api/auth/logoutAdmin', validateToken);
 app.use('/api/auth', authRoutes);
 app.use('/api/aws', awsRoutes);
 
+app.use('/api/public/setObjectPublic', validateToken);
+app.use('/api/public', publicRoutes);
+
 app.use(express.static(path.join(__dirname, 'client/build')))
 
 app.get("*", (_, res) => {
@@ -69,6 +78,7 @@ async function main() {
     const tempDir = path.join(__dirname, 'temp/');
     if (!fs.existsSync(tempDir))
         fs.mkdirSync(tempDir);
+
 
     await MongoModels.connect(connection, { useUnifiedTopology: true });
     app.listen(PORT);

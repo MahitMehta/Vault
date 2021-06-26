@@ -116,8 +116,8 @@ class APIQueries {
         return folderRequest; 
     }
 
-    async loadFiles(directory, baseDirectory) {
-        const endpoint = `/api/aws/getAllFiles?baseDirectory=${baseDirectory}&directory=${directory}&token=${this.token}`;
+    async loadFiles(directory, baseDirectory, userId) {
+        const endpoint = `/api/aws/getAllFiles?baseDirectory=${baseDirectory}&directory=${directory}&userId=${userId}&token=${this.token}`;
 
         const filesRequest = await fetch(endpoint, {
             "credentials": "include",
@@ -135,6 +135,17 @@ class APIQueries {
             "body": files
         });
         return filesPost; 
+    }
+
+    async setObjectPublic(userId, fileName, baseDirectory, directory) {
+        const endpoint = `/api/public/setObjectPublic?userId=${userId}&baseDirectory=${baseDirectory}&directory=${directory}&fname=${fileName}&token=${this.token}`;
+
+        const response = fetch(endpoint, {
+            method: "POST",
+            credentials: "include",
+        });
+
+        return response; 
     }
 }
 

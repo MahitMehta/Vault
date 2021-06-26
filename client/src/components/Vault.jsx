@@ -50,8 +50,10 @@ const Vault = () => {
         const apiQueries = new APIQueries(token);
         const tempDirectory = [].concat(directory);
         const currentDirectory = directory.length && directory.length !== 1 ? `${tempDirectory.join("-")}/` : "BASE";
-        const baseDirectory = JSON.parse(atob(sessionStorage.getItem('user'))).folderName; 
-        apiQueries.loadFiles(currentDirectory, baseDirectory)
+        const userData = JSON.parse(atob(sessionStorage.getItem('user'))); 
+        const baseDirectory = userData.folderName; 
+    
+        apiQueries.loadFiles(currentDirectory, baseDirectory, userData.userId)
             .then(res => res.json())
             .then(data => {
                 if (data.data.length) {
@@ -208,6 +210,10 @@ const Vault = () => {
                     handleFalseLogin={() => {
                         setValidLogin(false);
                         setLoginInvalid(true);
+                    }}
+                    setAlert={(message) => {
+                        setAlertData({ message, error: true })
+                        alertHandler();
                     }}
                 />
         

@@ -1,7 +1,11 @@
 'use-strict'
+
 const InitModel = require('./DirectoryModel');
 const UserModel = require('./UserModel');
 const jwt = require('jsonwebtoken');
+const PublicModel = require("./PublicModel");
+const crypto = require('crypto');
+
 require('dotenv').config();
 
 class MongoDBQueries {
@@ -100,6 +104,34 @@ class MongoDBQueries {
             console.log(err);
             return [];
         }
+    }
+
+    async setObjectPublic(collectionName, fname, directory) {
+        const randomSalt = Math.random().toString();
+        const timestamp = Date.now().toString();
+        const randomHash = crypto.createHash('SHA1').update(`${randomSalt}${timestamp}`).digest('hex');
+
+        const response = await PublicModel(collectionName).setObjectPublic(randomHash, fname, directory);
+        return { data: response, id: randomHash };
+    }
+
+    async getPublicObjectDirectory(collectionName, fileId) {
+        const response = new Promise( async (resolve, reject) => {
+            const validIdResponse = await PublicModel(collectionName).validateFileId(fileId);
+            let { publicId, fname, directory } = validIdResponse;  
+            if (publicId !== fileId || !directory || !fname) reject(null); 
+            
+            if (directory.slice(-4) === "BASE") directory = directory.slice(0, -4);
+            const fullDirectory = `${directory}${fname}`;
+            resolve(fullDirectory);
+        });
+
+        return response;
+    }
+
+    async getAllPublicFiles(collectionName, directory) {
+        const response = await PublicModel(collectionName).listAllPublicFiles(directory);
+        return response; 
     }
 }
 

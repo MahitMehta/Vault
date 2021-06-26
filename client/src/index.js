@@ -8,6 +8,7 @@ import DefaultHome from "./components/DefaultHome";
 import Vault from "./components/Vault";
 import SignUp from "./components/SignUp";
 import LoginForm from "./components/LoginForm";
+import PublicFileView from "./components/PublicFileView";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -24,6 +25,7 @@ ReactDOM.render(
             </DefaultHome>
           )}/>
           <Route exact path="/vault" component={Vault}/>
+          <Route exact path="/public/getPublicObject/:userId" component={PublicFileView}/>
           <Redirect to="/" />
         </Switch>
       </Router>
