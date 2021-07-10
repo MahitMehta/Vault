@@ -33,7 +33,7 @@ const validateRequest = (req, res, next) => {
 
     const userAgent = req.headers['user-agent'];
     if (!userAgent || userAgent.startsWith("curl/")) {
-        res.status(403).send("Nice Try...But You Failed!");
+        res.status(403).send("Nice Try...But You Failed!\n");
     }
 
     next();
