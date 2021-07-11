@@ -1,11 +1,13 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const app = express();
 const path = require('path');
 const PORT = process.env.PORT || 5000;
+
 const MongoModels = require('mongo-models');
 const fs = require('fs');
 
-const MongoDBQueries = require('./MongoDBQueries');
+const MongoDBQueries = require('./queries/MongoDBQueries');
 const mongoDBQueries = new MongoDBQueries();
 
 const cookieParser = require('cookie-parser');
@@ -18,6 +20,19 @@ const busboy = require('connect-busboy');
 
 require('dotenv').config();
 
+const appLoginLimiter = rateLimit({
+    windowMs: 1000,
+    max: 100
+});
+
+const appSignUpLimiter = rateLimit({
+    windowMs: 1000,
+    max: 10
+});
+
+app.set('trust proxy', 1);
+app.use('/api/auth/loginAdmin', appLoginLimiter);
+app.use('/api/auth/signup', appSignUpLimiter);
 
 app.use(cookieParser());
 app.use(express.json());
@@ -80,7 +95,7 @@ async function main() {
         fs.mkdirSync(tempDir);
 
 
-    await MongoModels.connect(connection, { useUnifiedTopology: true });
+    await MongoModels.connect(connection, { useUnifiedTopology: true }).catch(err => console.log(err))
     app.listen(PORT);
     console.log(`Listening on Port:${PORT}`);
 }

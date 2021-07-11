@@ -1,12 +1,12 @@
 const express = require('express');
 const Router = express.Router();
 const fs = require('fs');
-const MongoDBQueries = require('../MongoDBQueries');
+const MongoDBQueries = require('../queries/MongoDBQueries');
 const mongoDBQueries = new MongoDBQueries();
 const path = require('path');
 const MongoModels = require("mongo-models");
 
-const BucketIO = require('../AWSBucketQueries');
+const BucketIO = require('../queries/AWSBucketQueries');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,

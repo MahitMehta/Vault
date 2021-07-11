@@ -1,7 +1,7 @@
 const express = require('express');
 const Router = express.Router();
 const jwt = require('jsonwebtoken');
-const MongoDBQueries = require('../MongoDBQueries');
+const MongoDBQueries = require('../queries/MongoDBQueries');
 const crypto = require('crypto');
 const { SHA256 } = require('crypto-js');
 require('dotenv').config();

@@ -4,8 +4,8 @@ const MongoModels = require("mongo-models");
 const fs = require('fs');
 const path = require('path');
 
-const BucketIO = require('../AWSBucketQueries');
-const MongoDBQueries = require('../MongoDBQueries');
+const BucketIO = require('../queries/AWSBucketQueries');
+const MongoDBQueries = require('../queries/MongoDBQueries');
 
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({

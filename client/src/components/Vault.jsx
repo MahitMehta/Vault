@@ -219,7 +219,7 @@ const Vault = () => {
         
                 { validLogin ? (
                         <main className={Styles.vault_display}>
-                        <section className={Styles.buckets} style={showFolders ? { transform: `translate(0%, ${showFolders && desktop() ? "0px" : "80px"})`, padding: "15px"} : { transform: `translate(-100%, ${setMenu() ? "0px" : "80px"})`, padding: "0px"} }>
+                        <section className={Styles.buckets} style={showFolders ? { transform: `translate(0px, ${showFolders && desktop() ? "0px" : "80px"})`, padding: "15px"} : { transform: `translate(-230px, ${setMenu() ? "0px" : "80px"})`, padding: "15px"} }>
                         <Button onClick={() => setCreateBucket(true)}>Create Folder</Button>
                         <ul className={Styles.bucket_list}>
                             { loadedFoldersUL.map((folder, idx ) => {
@@ -244,7 +244,13 @@ const Vault = () => {
                             setShowFolders(!showFolders);
                         }} />
                         <div className={Styles.objectContainer}>
-                            { files.map((file, idx) => {
+                            { files.filter(file => {
+                                const user = JSON.parse(atob(sessionStorage.getItem('user'))); 
+                                const baseDirectory = user.folderName;
+                                const searchKey = "";
+                                return file.startsWith(`${baseDirectory}/${searchKey}`);
+                            }).map((file, idx) => {
+                                
                                 return <AWSObject key={idx} file={file} handleClick={(fname) => {
                                     setCurrentFileInfo({ fileName: fname })
                                     setShowFileView(true);

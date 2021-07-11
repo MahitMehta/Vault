@@ -1,9 +1,9 @@
 'use-strict'
 
-const InitModel = require('./DirectoryModel');
-const UserModel = require('./UserModel');
+const InitModel = require('../models/DirectoryModel');
+const UserModel = require('../models/UserModel');
 const jwt = require('jsonwebtoken');
-const PublicModel = require("./PublicModel");
+const PublicModel = require("../models/PublicModel");
 const crypto = require('crypto');
 
 require('dotenv').config();

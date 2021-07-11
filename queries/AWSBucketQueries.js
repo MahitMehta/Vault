@@ -1,6 +1,6 @@
 const fs = require('fs')
 require('dotenv').config();
-const MongoDBQueries = require('./MongoDBQueries');
+const MongoDBQueries = require('../queries/MongoDBQueries');
 
 class BucketIO {
     constructor(dbObject) {
