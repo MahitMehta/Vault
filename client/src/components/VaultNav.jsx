@@ -10,6 +10,7 @@ import Button from "react-bootstrap/Button";
 // Styles
 import "bootstrap/dist/css/bootstrap.min.css";
 import Styles from "../styles/styles.module.scss";
+import SearchBar from './SearchBar';
 
 const VaultNav = ({ handleUploadFile, showFolders }) => {
     const [ showMenu, setShowMenu ] = useState(false);
@@ -50,7 +51,8 @@ const VaultNav = ({ handleUploadFile, showFolders }) => {
     const queryDirectory = ['/'].concat(window.location.href.split('dir=')[1].split('/')).filter(dir => dir !== "");
 
     return (
-        <nav className={Styles.vault_nav}>
+        <nav className={Styles.vault_main_nav}>
+            <div className={Styles.vault_nav}>
             { showMenu ? (
                 <div className={Styles.vault_nav_icon} onClick={() => {
                     showFolders()
@@ -86,6 +88,10 @@ const VaultNav = ({ handleUploadFile, showFolders }) => {
                     <FontAwesomeIcon icon={faSignOutAlt} />
                 </Button>
             </div>
+            </div>
+            {/* <div className={Styles.vault_nav}>
+                <SearchBar />
+            </div> */}
         </nav>
     )
 }

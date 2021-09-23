@@ -1,10 +1,18 @@
-.vault_nav {
+.vault_main_nav {
   display: flex;
   width: 100%;
-  height: 80px;
+  min-height: 80px;
   border-bottom: 1px solid lightgrey;
   padding: 15px;
   align-items: center;
+  flex-direction: column;
+
+  .vault_nav {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    height: 50px;
+  }
 
   .vault_nav_icon {
     color: grey;
