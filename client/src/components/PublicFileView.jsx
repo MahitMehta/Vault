@@ -22,7 +22,7 @@ const PublicFileView = ({ match }) => {
             setFileName(params.fname ? params.fname : 'File');
         }
 
-        const url = `/api/public/getPublicObject?userId=${userId}&fileId=${params.id}&fname=${params.fname}&download=${download}`;
+        const url = `/api/public/getPublicObject/${params.fname}?userId=${userId}&fileId=${params.id}&fname=${params.fname}&download=${download}`;
 
         return url;
     }

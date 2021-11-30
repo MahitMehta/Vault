@@ -38,7 +38,7 @@ router.post("/setObjectPublic", async (req, res) => {
     }
 });
 
-router.get("/getPublicObject", async (req, res) => {
+router.get("/getPublicObject/:filename", async (req, res) => {
     let { userId, fileId, download, fname } = req.query; 
     if (!userId || !fileId || fileId === 'undefined' || !fname) {
         res.send("Invalid File");
